@@ -23,9 +23,9 @@ mod tests {
 
     #[test]
     fn test_program_should_start_at_offset() {
-        let program: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let test_program: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-        let memory = Memory::new(program);
+        let memory = Memory::new(test_program);
 
         assert_eq!(memory.ram[MEMORY_OFFSET], 1);
         assert_eq!(memory.ram[MEMORY_OFFSET + 9], 10);
