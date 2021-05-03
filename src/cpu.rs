@@ -1,4 +1,4 @@
-const PROGRAM_START: usize = 0x200;
+const PROGRAM_START: u16 = 0x200;
 const NUM_GENERAL_PURPOSE_REGISTERS: usize = 16;
 const STACK_SIZE: usize = 16;
 
