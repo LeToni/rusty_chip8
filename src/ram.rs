@@ -5,7 +5,7 @@ pub struct Ram {
 
 impl Ram {
     pub fn new() -> Ram {
-        let mut memory = [0; MEMORY_SIZE];
+        let memory = [0; MEMORY_SIZE];
 
         Ram { memory: memory }
     }
