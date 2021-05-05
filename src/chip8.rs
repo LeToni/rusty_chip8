@@ -11,7 +11,10 @@ impl Chip8 {
         let ram = Ram::new();
         let cpu = CPU::new();
 
-        Chip8 { ram, cpu }
+        let mut chip8 = Chip8 { ram, cpu };
+        chip8.init_memory();
+
+        chip8
     }
 
     fn init_memory(&mut self) {
@@ -37,10 +40,9 @@ mod tests {
     #[test]
     fn should_load_font_0_correct_into_memory() {
         // Given
-        let mut chip8 = Chip8::new();
+        let chip8 = Chip8::new();
 
         // When
-        chip8.init_memory();
 
         // Then
         assert_eq!(chip8.ram.memory[0], 0xF0);
@@ -50,10 +52,9 @@ mod tests {
     #[test]
     fn should_load_font_1_correct_into_memory() {
         // Given
-        let mut chip8 = Chip8::new();
+        let chip8 = Chip8::new();
 
         // When
-        chip8.init_memory();
 
         // Then
         assert_eq!(chip8.ram.memory[5], 0x20);
@@ -63,10 +64,9 @@ mod tests {
     #[test]
     fn should_load_font_a_correct_into_memory() {
         // Given
-        let mut chip8 = Chip8::new();
+        let chip8 = Chip8::new();
 
         // When
-        chip8.init_memory();
 
         // Then
         assert_eq!(chip8.ram.memory[50], 0xF0);
@@ -76,10 +76,9 @@ mod tests {
     #[test]
     fn should_load_font_b_correct_into_memory() {
         // Given
-        let mut chip8 = Chip8::new();
+        let chip8 = Chip8::new();
 
         // When
-        chip8.init_memory();
 
         // Then
         assert_eq!(chip8.ram.memory[55], 0xE0);
@@ -89,10 +88,9 @@ mod tests {
     #[test]
     fn should_load_font_f_correct_into_memory() {
         // Given
-        let mut chip8 = Chip8::new();
+        let chip8 = Chip8::new();
 
         // When
-        chip8.init_memory();
 
         // Then
         assert_eq!(chip8.ram.memory[75], 0xF0);

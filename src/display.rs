@@ -1,7 +1,7 @@
 const DISPLAY_WIDTH: usize = 64;
 const DISPLAY_HEIGHT: usize = 32;
 
-type Buffer = [bool; WIDTH * HEIGHT];
+type Buffer = [bool; DISPLAY_WIDTH * DISPLAY_HEIGHT];
 
 pub struct Display {
     buffer: Buffer,
