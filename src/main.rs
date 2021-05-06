@@ -1,6 +1,8 @@
 mod chip8;
 mod cpu;
+mod display;
 mod fonts;
+mod instruction;
 mod ram;
 
 use std::{fs::File, io::Read};
