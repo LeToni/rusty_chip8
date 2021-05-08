@@ -14,15 +14,17 @@ pub enum Instruction {
     AndVxVy(u8, u8),
     Xor(u8, u8),
     AddVxVy(u8, u8),
+    SubVxVy(u8, u8),
     RShiftVx(u8),
     SubnVxVy(u8, u8),
     LShiftVx(u8),
     SkipNEqVxVy(u8, u8),
-    LoadI(u8),
-    JumpV0(u8),
+    LoadI(u16),
+    JumpV0(u16),
     RndVxByte(u8, u8),
     Draw(u8, u8, u8),
     SkipVx(u8),
+    NSkipVx(u8),
     LoadVxTimer(u8),
     LoadVxKey(u8),
     LoadTimerVx(u8),
@@ -50,6 +52,43 @@ impl Instruction {
             0x5 => Some(Instruction::SkipEqVxVy(oxoo(opcode), ooxo(opcode))),
             0x6 => Some(Instruction::LoadVxByte(oxoo(opcode), kk(opcode))),
             0x7 => Some(Instruction::AddVxByte(oxoo(opcode), kk(opcode))),
+            0x8 => match n(opcode) {
+                0x0 => Some(Instruction::LoadVxVy(oxoo(opcode), ooxo(opcode))),
+                0x1 => Some(Instruction::OrVxVy(oxoo(opcode), ooxo(opcode))),
+                0x2 => Some(Instruction::AndVxVy(oxoo(opcode), ooxo(opcode))),
+                0x3 => Some(Instruction::Xor(oxoo(opcode), ooxo(opcode))),
+                0x4 => Some(Instruction::AddVxVy(oxoo(opcode), ooxo(opcode))),
+                0x5 => Some(Instruction::SubVxVy(oxoo(opcode), ooxo(opcode))),
+                0x6 => Some(Instruction::RShiftVx(oxoo(opcode))),
+                0x7 => Some(Instruction::SubnVxVy(oxoo(opcode), ooxo(opcode))),
+                0xE => Some(Instruction::LShiftVx(oxoo(opcode))),
+                _ => None,
+            },
+            0x9 => match n(opcode) {
+                0x0 => Some(Instruction::SkipNEqVxVy(oxoo(opcode), ooxo(opcode))),
+                _ => None,
+            },
+            0xA => Some(Instruction::LoadI(nnn(opcode))),
+            0xB => Some(Instruction::JumpV0(nnn(opcode))),
+            0xC => Some(Instruction::RndVxByte(oxoo(opcode), kk(opcode))),
+            0xD => Some(Instruction::Draw(oxoo(opcode), ooxo(opcode), n(opcode))),
+            0xE => match kk(opcode) {
+                0x9E => Some(Instruction::SkipVx(oxoo(opcode))),
+                0xA1 => Some(Instruction::NSkipVx(oxoo(opcode))),
+                _ => None,
+            },
+            0xF => match kk(opcode) {
+                0x07 => Some(Instruction::LoadVxTimer(oxoo(opcode))),
+                0x0A => Some(Instruction::LoadVxKey(oxoo(opcode))),
+                0x15 => Some(Instruction::LoadTimerVx(oxoo(opcode))),
+                0x18 => Some(Instruction::LoadSoundVx(oxoo(opcode))),
+                0x1E => Some(Instruction::AddI(oxoo(opcode))),
+                0x29 => Some(Instruction::LoadFVx(oxoo(opcode))),
+                0x33 => Some(Instruction::LoadBVx(oxoo(opcode))),
+                0x55 => Some(Instruction::StoreIVx(oxoo(opcode))),
+                0x65 => Some(Instruction::LoadIVx(oxoo(opcode))),
+                _ => None,
+            },
             _ => None,
         }
     }
@@ -65,7 +104,7 @@ fn ooxo(opcode: u16) -> u8 {
     (shifted_value & 0xF) as u8
 }
 
-fn ooox(opcode: u16) -> u8 {
+fn n(opcode: u16) -> u8 {
     (opcode & 0xF) as u8
 }
 
