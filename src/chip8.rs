@@ -1,4 +1,4 @@
-use crate::{cpu::CPU, fonts::SPRITES, ram::Ram};
+use crate::{cpu::CPU, fonts::SPRITES, instruction::Instruction, ram::Ram};
 
 const PROGRAM_OFFSET: usize = 0x200;
 pub struct Chip8 {
@@ -31,6 +31,25 @@ impl Chip8 {
         for (i, &data) in prog.iter().enumerate() {
             self.ram.memory[PROGRAM_OFFSET + i] = data;
         }
+    }
+
+    pub fn emulate_cycle(&mut self) {
+        let opcode = self.fetch_opcode();
+        let instruction = self.decode_opcode(opcode);
+        self.execute_opcode(instruction);
+    }
+
+    fn fetch_opcode(&self) -> u16 {
+        // TODO: Implementation
+        0x0
+    }
+
+    fn decode_opcode(&self, opcode: u16) -> Instruction {
+        Instruction::translate_opcode(opcode).expect("Unknown opcode")
+    }
+
+    fn execute_opcode(&mut self, instruction: Instruction) {
+        // TODO: Implementation
     }
 }
 
