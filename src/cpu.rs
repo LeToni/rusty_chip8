@@ -22,11 +22,12 @@ impl CPU {
             stack: [0; STACK_SIZE],
         }
     }
-}
-// requires program counter (PC - instruction pointer)
-// after an instruction is fetched, PC is incremented by length of instruction so that it will contain address of next instruction in sequence
-// requires clock rate?
 
-// CPU cycle steps - fetch opcode - decode opcode to instruction - execute instruction
-// decode ops code to instruction
-// execute instruction
+    pub fn get_pc(&self) -> u16 {
+        self.program_counter
+    }
+
+    pub fn set_pc(&mut self, address: u16) {
+        self.program_counter = address;
+    }
+}
