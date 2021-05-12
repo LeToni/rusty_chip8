@@ -40,8 +40,11 @@ impl Chip8 {
     }
 
     fn fetch_opcode(&self) -> u16 {
-        // TODO: Implementation
-        0x0
+        let higher_byte: u16 = (self.ram.read_byte(self.cpu.get_pc()) as u16) << 8;
+        let lower_byte: u16 = (self.ram.read_byte(self.cpu.get_pc() + 1)) as u16;
+
+        let opcode = higher_byte | lower_byte;
+        opcode
     }
 
     fn decode_opcode(&self, opcode: u16) -> Instruction {
@@ -49,7 +52,15 @@ impl Chip8 {
     }
 
     fn execute_opcode(&mut self, instruction: Instruction) {
-        // TODO: Implementation
+        match instruction {
+            Instruction::Clear => (),
+            Instruction::Return => (),
+            Instruction::Jump(address) => (),
+            Instruction::Call(address) => (),
+            Instruction::SkipEqVxByte(register, byte_value) => (),
+            Instruction::SkipNEqVxByte(register, byte_value) => (),
+            _ => (),
+        }
     }
 }
 
