@@ -13,4 +13,8 @@ impl Display {
             buffer: [false; DISPLAY_WIDTH * DISPLAY_HEIGHT],
         }
     }
+
+    pub fn clear(&mut self) {
+        self.buffer = [false; DISPLAY_WIDTH * DISPLAY_HEIGHT];
+    }
 }
