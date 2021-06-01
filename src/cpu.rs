@@ -182,14 +182,35 @@ impl CPU {
                 self.program_counter += 2;
             }
             Instruction::Draw(_, _, _) => {}
-            Instruction::SkipVx(_) => {}
-            Instruction::NSkipVx(_) => {}
+            Instruction::SkipVx(register) => {
+                if let Some(pressed_key) = bus.get_pressed_key() {
+                    let stored_value = self.fetch_from_register(register);
+                    if stored_value == pressed_key {
+                        self.program_counter += 2
+                    }
+                }
+                self.program_counter += 2;
+            }
+            Instruction::NSkipVx(register) => {
+                if let Some(pressed_key) = bus.get_pressed_key() {
+                    let stored_value = self.fetch_from_register(register);
+                    if stored_value != pressed_key {
+                        self.program_counter += 2
+                    }
+                }
+                self.program_counter += 2;
+            }
             Instruction::LoadVxTimer(register) => {
                 self.write_to_register(register, self.timer_register);
 
                 self.program_counter += 2;
             }
-            Instruction::LoadVxKey(_) => {}
+            Instruction::LoadVxKey(register) => {
+                if let Some(pressed_key) = bus.get_pressed_key() {
+                    self.write_to_register(register, pressed_key);
+                    self.program_counter += 2;
+                }
+            }
             Instruction::LoadTimerVx(register) => {
                 self.timer_register = self.fetch_from_register(register);
 
