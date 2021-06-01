@@ -1,8 +1,9 @@
-use crate::{display::Display, ram::Ram};
+use crate::{display::Display, keyboard::Keyboard, ram::Ram};
 
 pub struct Bus {
     ram: Ram,
     display: Display,
+    keyboard: Keyboard,
 }
 
 impl Bus {
@@ -10,6 +11,7 @@ impl Bus {
         Bus {
             ram: Ram::new(),
             display: Display::new(),
+            keyboard: Keyboard::new(),
         }
     }
 
@@ -23,5 +25,17 @@ impl Bus {
 
     pub fn clear_display(&mut self) {
         self.display.clear();
+    }
+
+    pub fn pressed_key(&mut self, key: Option<u8>) {
+        self.keyboard.pressed_key(key);
+    }
+
+    pub fn get_pressed_key(&self) -> Option<u8> {
+        self.keyboard.get_pressed_key()
+    }
+
+    pub fn released_key(&mut self, key: Option<u8>) {
+        self.keyboard.released_key(key);
     }
 }
