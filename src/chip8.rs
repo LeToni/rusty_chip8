@@ -37,6 +37,14 @@ impl Chip8 {
     pub fn execute_cycle(&mut self) {
         self.cpu.cycle(&mut self.bus);
     }
+
+    pub fn key_pressed(&mut self, key: Option<u8>) {
+        self.bus.pressed_key(key)
+    }
+
+    pub fn key_released(&mut self, key: Option<u8>) {
+        self.bus.released_key(key);
+    }
 }
 
 #[cfg(test)]
