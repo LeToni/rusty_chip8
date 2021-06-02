@@ -23,6 +23,20 @@ impl Bus {
         self.ram.read_byte(address)
     }
 
+    pub fn set_display_pixels(
+        &mut self,
+        screen_pos_x: u8,
+        screen_pos_y: u8,
+        read_start: usize,
+        read_end: usize,
+    ) -> bool {
+        self.display.set_pixels(
+            screen_pos_x,
+            screen_pos_y,
+            &self.ram.memory[read_start..read_end],
+        )
+    }
+
     pub fn clear_display(&mut self) {
         self.display.clear();
     }
