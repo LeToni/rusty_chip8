@@ -1,6 +1,6 @@
 const MEMORY_SIZE: usize = 0xFFF;
 pub struct Ram {
-    memory: [u8; MEMORY_SIZE],
+    pub memory: [u8; MEMORY_SIZE],
 }
 
 impl Ram {
