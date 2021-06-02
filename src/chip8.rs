@@ -1,16 +1,18 @@
-use crate::{bus::Bus, cpu::CPU, fonts::SPRITES};
+use crate::{bus::Bus, cpu::CPU, display::Display, fonts::SPRITES};
 
 const PROGRAM_OFFSET: usize = 0x200;
 pub struct Chip8 {
     cpu: CPU,
     bus: Bus,
+    pub display: Display,
 }
 
-impl Chip8 {
+impl<'a> Chip8 {
     pub fn new() -> Chip8 {
         let mut chip8 = Chip8 {
             cpu: CPU::new(),
             bus: Bus::new(),
+            display: Display::new(),
         };
 
         chip8.init_memory();
@@ -34,8 +36,8 @@ impl Chip8 {
         }
     }
 
-    pub fn execute_cycle(&mut self) {
-        self.cpu.cycle(&mut self.bus);
+    pub fn execute(&mut self, delta_time: f64) {
+        self.cpu.cycle(&mut self.bus, delta_time);
     }
 
     pub fn key_pressed(&mut self, key: Option<u8>) {
