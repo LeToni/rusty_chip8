@@ -5,6 +5,7 @@ use crate::{bus::Bus, instruction::Instruction};
 const PROGRAM_START: u16 = 0x200;
 const NUM_GENERAL_PURPOSE_REGISTERS: usize = 16;
 const STACK_SIZE: usize = 16;
+const CLOCK_RATE: f64 = 600.0;
 
 pub struct CPU {
     general_registers: [u8; NUM_GENERAL_PURPOSE_REGISTERS],
@@ -29,7 +30,15 @@ impl CPU {
         }
     }
 
-    pub fn cycle(&mut self, bus: &mut Bus) {
+    pub fn cycle(&mut self, bus: &mut Bus, delta_time: f64) {
+        let executions = (delta_time * CLOCK_RATE) as u64;
+
+        for _ in 1..executions {
+            self.execute_instruction(bus);
+        }
+    }
+
+    fn execute_instruction(&mut self, bus: &mut Bus) {
         let opcode = self.fetch_opcode(bus);
         let instruction = self.decode_opcode(opcode);
 
@@ -181,7 +190,18 @@ impl CPU {
 
                 self.program_counter += 2;
             }
-            Instruction::Draw(_, _, _) => {}
+            Instruction::Draw(register_x, register_y, n) => {
+                let vx = self.fetch_from_register(register_x);
+                let vy = self.fetch_from_register(register_y);
+
+                let memory_start = self.index_register as usize;
+                let memory_end = (self.index_register + n as u16) as usize;
+
+                let pixel_collision = bus.set_display_pixels(vx, vy, memory_start, memory_end);
+
+                self.write_to_register(0xF, pixel_collision as u8);
+                self.program_counter += 2;
+            }
             Instruction::SkipVx(register) => {
                 if let Some(pressed_key) = bus.get_pressed_key() {
                     let stored_value = self.fetch_from_register(register);
