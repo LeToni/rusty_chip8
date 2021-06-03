@@ -13,15 +13,14 @@ use chip8::Chip8;
 use display::{DISPLAY_HEIGHT, DISPLAY_WIDTH};
 use graphics::rectangle::square;
 use piston::{
-    Button, Event, Key, PressEvent, ReleaseEvent, RenderEvent, Size, UpdateArgs, UpdateEvent,
-    WindowSettings,
+    Button, Event, Key, PressEvent, ReleaseEvent, RenderEvent, Size, UpdateEvent, WindowSettings,
 };
 use piston_window::PistonWindow as Window;
 
 const ENLARGEMENT_FACTOR: usize = 10;
 
 fn main() {
-    let input_rom = "rom/Space_Invaders.ch8";
+    let input_rom = "rom/BC_test.ch8";
 
     let mut rom = File::open(input_rom).expect("Not ableto open rom");
     let mut program = Vec::<u8>::new();
