@@ -94,7 +94,7 @@ impl CPU {
             }
             Instruction::AddVxByte(register, data_byte) => {
                 let register_data = self.fetch_from_register(register);
-                self.write_to_register(register, register_data + data_byte);
+                self.write_to_register(register, register_data.wrapping_add(data_byte));
 
                 self.program_counter += 2;
             }
