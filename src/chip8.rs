@@ -4,7 +4,6 @@ const PROGRAM_OFFSET: usize = 0x200;
 pub struct Chip8 {
     cpu: CPU,
     bus: Bus,
-    pub display: Display,
 }
 
 impl<'a> Chip8 {
@@ -12,7 +11,6 @@ impl<'a> Chip8 {
         let mut chip8 = Chip8 {
             cpu: CPU::new(),
             bus: Bus::new(),
-            display: Display::new(),
         };
 
         chip8.init_memory();
@@ -46,6 +44,10 @@ impl<'a> Chip8 {
 
     pub fn key_released(&mut self, key: Option<u8>) {
         self.bus.released_key(key);
+    }
+
+    pub fn display(&self) -> &Display {
+        &self.bus.get_display()
     }
 }
 
