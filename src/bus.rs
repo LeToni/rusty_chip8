@@ -23,18 +23,8 @@ impl Bus {
         self.ram.read_byte(address)
     }
 
-    pub fn set_display_pixels(
-        &mut self,
-        screen_pos_x: u8,
-        screen_pos_y: u8,
-        read_start: usize,
-        read_end: usize,
-    ) -> bool {
-        self.display.set_pixels(
-            screen_pos_x,
-            screen_pos_y,
-            &self.ram.memory[read_start..read_end],
-        )
+    pub fn get_display(&self) -> &Display {
+        &self.display
     }
 
     pub fn clear_display(&mut self) {
@@ -51,5 +41,9 @@ impl Bus {
 
     pub fn released_key(&mut self, key: Option<u8>) {
         self.keyboard.released_key(key);
+    }
+
+    pub fn draw_byte(&mut self, pos_x: u8, pos_y: u8, byte: u8) -> bool {
+        self.display.draw_byte(pos_x, pos_y, byte)
     }
 }
