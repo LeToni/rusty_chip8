@@ -4,7 +4,6 @@ use crate::{bus::Bus, instruction::Instruction};
 
 const PROGRAM_START: u16 = 0x200;
 const NUM_GENERAL_PURPOSE_REGISTERS: usize = 16;
-const STACK_SIZE: usize = 16;
 const CLOCK_RATE: f64 = 600.0;
 
 pub struct CPU {
@@ -12,8 +11,7 @@ pub struct CPU {
     sound_register: u8,
     timer_register: u8,
     program_counter: u16,
-    stack_pointer: u8,
-    stack: [u16; STACK_SIZE],
+    stack: Vec<u16>,
     index_register: u16,
 }
 
@@ -24,8 +22,7 @@ impl CPU {
             sound_register: 0,
             timer_register: 0,
             program_counter: PROGRAM_START,
-            stack_pointer: 0,
-            stack: [0; STACK_SIZE],
+            stack: Vec::<u16>::new(),
             index_register: 0,
         }
     }
@@ -48,21 +45,14 @@ impl CPU {
                 self.program_counter += 2;
             }
             Instruction::Return => {
-                let addr = self.stack[self.stack_pointer as usize];
+                let addr = self.stack.pop().unwrap();
                 self.program_counter = addr;
-
-                if self.stack_pointer > 0 {
-                    self.stack_pointer = self.stack_pointer - 1;
-                }
             }
             Instruction::Jump(addr) => {
                 self.program_counter = addr;
             }
             Instruction::Call(addr) => {
-                if (self.stack_pointer as usize) < STACK_SIZE {
-                    self.stack_pointer = self.stack_pointer + 1;
-                }
-                self.stack[self.stack_pointer as usize] = self.program_counter;
+                self.stack.push(self.program_counter + 2);
                 self.program_counter = addr;
             }
             Instruction::SkipEqVxByte(register, data_byte) => {
@@ -105,17 +95,25 @@ impl CPU {
                 self.program_counter += 2;
             }
             Instruction::OrVxVy(register1, register2) => {
-                self.write_to_register(register1, register1 | register2);
+                let vx = self.fetch_from_register(register1);
+                let vy = self.fetch_from_register(register2);
+                self.write_to_register(register1, vx | vy);
 
                 self.program_counter += 2;
             }
             Instruction::AndVxVy(register1, register2) => {
-                self.write_to_register(register1, register1 & register2);
+                let vx = self.fetch_from_register(register1);
+                let vy = self.fetch_from_register(register2);
+
+                self.write_to_register(register1, vx & vy);
 
                 self.program_counter += 2;
             }
             Instruction::Xor(register1, register2) => {
-                self.write_to_register(register1, register1 ^ register2);
+                let vx = self.fetch_from_register(register1);
+                let vy = self.fetch_from_register(register2);
+
+                self.write_to_register(register1, vx ^ vy);
 
                 self.program_counter += 2;
             }
@@ -129,10 +127,12 @@ impl CPU {
                 self.program_counter += 2;
             }
             Instruction::SubVxVy(register1, register2) => {
-                let diff =
-                    self.fetch_from_register(register1) - self.fetch_from_register(register2);
+                let vx = self.fetch_from_register(register1);
+                let vy = self.fetch_from_register(register2);
 
-                self.write_to_register(0xF, (diff > 0) as u8);
+                self.write_to_register(0xF, (vx > vy) as u8);
+
+                let diff = vx.wrapping_sub(vy);
                 self.write_to_register(register1, diff);
 
                 self.program_counter += 2;
@@ -146,10 +146,12 @@ impl CPU {
                 self.program_counter += 2;
             }
             Instruction::SubnVxVy(register1, register2) => {
-                let diff =
-                    self.fetch_from_register(register2) - self.fetch_from_register(register1);
+                let vx = self.fetch_from_register(register1);
+                let vy = self.fetch_from_register(register2);
 
-                self.write_to_register(0xF, (diff > 0) as u8);
+                self.write_to_register(0xF, (vx < vy) as u8);
+
+                let diff = vy.wrapping_sub(vx);
                 self.write_to_register(register1, diff);
 
                 self.program_counter += 2;
@@ -194,34 +196,34 @@ impl CPU {
                 let vx = self.fetch_from_register(register_x);
                 let vy = self.fetch_from_register(register_y);
 
-                let memory_start = self.index_register as usize;
-                let memory_end = (self.index_register + n as u16) as usize;
-
-                let pixel_collision = bus.set_display_pixels(vx, vy, memory_start, memory_end);
-
-                self.write_to_register(0xF, pixel_collision as u8);
+                self.draw_sprite(bus, vx, vy, n);
                 self.program_counter += 2;
             }
             Instruction::SkipVx(register) => {
-                if let Some(pressed_key) = bus.get_pressed_key() {
-                    let stored_value = self.fetch_from_register(register);
-                    if stored_value == pressed_key {
-                        self.program_counter += 2
+                let stored_value = self.fetch_from_register(register);
+
+                if let Some(key) = bus.get_pressed_key() {
+                    if key == stored_value {
+                        self.program_counter += 2;
                     }
                 }
                 self.program_counter += 2;
             }
             Instruction::NSkipVx(register) => {
-                if let Some(pressed_key) = bus.get_pressed_key() {
-                    let stored_value = self.fetch_from_register(register);
-                    if stored_value != pressed_key {
-                        self.program_counter += 2
+                let stored_value = self.fetch_from_register(register);
+
+                match bus.get_pressed_key() {
+                    Some(key) => {
+                        if key != stored_value {
+                            self.program_counter += 2;
+                        }
                     }
+                    _ => (),
                 }
                 self.program_counter += 2;
             }
             Instruction::LoadVxTimer(register) => {
-                self.write_to_register(register, self.timer_register);
+                self.timer_register = self.fetch_from_register(register);
 
                 self.program_counter += 2;
             }
@@ -232,7 +234,7 @@ impl CPU {
                 }
             }
             Instruction::LoadTimerVx(register) => {
-                self.timer_register = self.fetch_from_register(register);
+                self.write_to_register(register, self.timer_register);
 
                 self.program_counter += 2;
             }
@@ -306,5 +308,17 @@ impl CPU {
 
     fn write_to_register(&mut self, register_number: u8, data_byte: u8) {
         self.general_registers[register_number as usize] = data_byte;
+    }
+
+    fn draw_sprite(&mut self, bus: &mut Bus, starting_x: u8, starting_y: u8, n: u8) {
+        let mut pixel_collision = false;
+
+        for sprite_y in 0..n {
+            let b = bus.read_from_ram(self.index_register + sprite_y as u16);
+
+            pixel_collision |= bus.draw_byte(starting_x, starting_y + sprite_y, b);
+        }
+
+        self.write_to_register(0xF, pixel_collision as u8);
     }
 }
