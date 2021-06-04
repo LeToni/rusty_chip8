@@ -39,7 +39,7 @@ pub enum Instruction {
 #[allow(dead_code)]
 impl Instruction {
     pub fn translate_opcode(opcode: u16) -> Option<Instruction> {
-        match oxoo(opcode) {
+        match xooo(opcode) {
             0x0 => match kk(opcode) {
                 0xE0 => Some(Instruction::Clear),
                 0xEE => Some(Instruction::Return),
@@ -94,9 +94,14 @@ impl Instruction {
     }
 }
 
-fn oxoo(opcode: u16) -> u8 {
+fn xooo(opcode: u16) -> u8 {
     let shifted_value = opcode >> 12;
-    (shifted_value) as u8
+    (shifted_value & 0xF) as u8
+}
+
+fn oxoo(opcode: u16) -> u8 {
+    let shifted_value = opcode >> 8;
+    (shifted_value & 0xF) as u8
 }
 
 fn ooxo(opcode: u16) -> u8 {
