@@ -20,7 +20,7 @@ use piston_window::PistonWindow as Window;
 const ENLARGEMENT_FACTOR: usize = 10;
 
 fn main() {
-    let input_rom = "rom/BC_test.ch8";
+    let input_rom = "rom/Space_Invaders.ch8";
 
     let mut rom = File::open(input_rom).expect("Not ableto open rom");
     let mut program = Vec::<u8>::new();
@@ -56,7 +56,7 @@ fn main() {
         }
 
         if let Some(_args) = event.render_args() {
-            render_emulator(&chip8.display.get_buffer(), &mut window, &event)
+            render_emulator(&chip8.display().get_buffer(), &mut window, &event)
         }
     }
 }
@@ -70,7 +70,11 @@ fn render_emulator(display_buffer: &display::Buffer, window: &mut Window, event:
         for (coord_x, row) in display_buffer.iter().enumerate() {
             for (coord_y, pixel_on) in row.iter().enumerate() {
                 if *pixel_on {
-                    let pixel = square(coord_x as f64, coord_y as f64, ENLARGEMENT_FACTOR as f64);
+                    let pixel = square(
+                        (coord_x * ENLARGEMENT_FACTOR) as f64,
+                        (coord_y * ENLARGEMENT_FACTOR) as f64,
+                        ENLARGEMENT_FACTOR as f64,
+                    );
                     Rectangle::new(color::WHITE).draw(
                         pixel,
                         &context.draw_state,
@@ -87,26 +91,28 @@ fn get_emulator_keycode(button: Button) -> Option<u8> {
     if let Button::Keyboard(key) = button {
         match key {
             // first key row
-            Key::NumPad1 => Some(0x1),
-            Key::NumPad2 => Some(0x2),
-            Key::NumPad3 => Some(0x3),
-            Key::NumPad4 => Some(0xC),
+            Key::NumPad1 => return Some(0x1),
+            Key::NumPad2 => return Some(0x2),
+            Key::NumPad3 => return Some(0x3),
+            Key::NumPad4 => return Some(0xC),
             // second key row
-            Key::Q => Some(0x4),
-            Key::W => Some(0x5),
-            Key::E => Some(0x6),
-            Key::R => Some(0xD),
+            Key::Q => return Some(0x4),
+            Key::W => {
+                return Some(0x5);
+            }
+            Key::E => return Some(0x6),
+            Key::R => return Some(0xD),
             // third key row
-            Key::A => Some(0x7),
-            Key::S => Some(0x8),
-            Key::D => Some(0x9),
-            Key::F => Some(0xE),
+            Key::A => return Some(0x7),
+            Key::S => return Some(0x8),
+            Key::D => return Some(0x9),
+            Key::F => return Some(0xE),
             // fourth key row
-            Key::Y => Some(0xA),
-            Key::X => Some(0x0),
-            Key::C => Some(0xB),
-            Key::V => Some(0xF),
-            _ => None,
+            Key::Y => return Some(0xA),
+            Key::X => return Some(0x0),
+            Key::C => return Some(0xB),
+            Key::V => return Some(0xF),
+            _ => return None,
         };
     }
 
