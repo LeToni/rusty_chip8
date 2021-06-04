@@ -1,7 +1,7 @@
 pub const DISPLAY_WIDTH: usize = 64;
 pub const DISPLAY_HEIGHT: usize = 32;
 
-pub type Buffer = [[bool; DISPLAY_WIDTH]; DISPLAY_HEIGHT];
+pub type Buffer = [[bool; DISPLAY_HEIGHT]; DISPLAY_WIDTH];
 
 pub struct Display {
     buffer: Buffer,
@@ -10,38 +10,41 @@ pub struct Display {
 impl Display {
     pub fn new() -> Display {
         Display {
-            buffer: [[false; DISPLAY_WIDTH]; DISPLAY_HEIGHT],
+            buffer: [[false; DISPLAY_HEIGHT]; DISPLAY_WIDTH],
         }
     }
 
     pub fn clear(&mut self) {
-        self.buffer = [[false; DISPLAY_WIDTH]; DISPLAY_HEIGHT];
+        self.buffer = [[false; DISPLAY_HEIGHT]; DISPLAY_WIDTH];
     }
 
-    pub fn get_buffer(&self) -> Buffer {
-        self.buffer
+    pub fn get_buffer(&self) -> &Buffer {
+        &self.buffer
     }
 
-    pub fn set_pixels(&mut self, screen_pos_x: u8, screen_pos_y: u8, memory: &[u8]) -> bool {
-        let mut pixel_turned_off = false;
+    pub fn draw_byte(&mut self, pos_x: u8, pos_y: u8, byte: u8) -> bool {
+        let mut pixel_collision = false;
+        let y = pos_y as usize % DISPLAY_HEIGHT;
 
-        for (byte_number, block) in memory.iter().enumerate() {
-            let y = (screen_pos_y as usize + byte_number) % DISPLAY_HEIGHT;
+        for bit_pos in 0..8 {
+            let x = (pos_x as usize + bit_pos) % DISPLAY_WIDTH;
 
-            for bit_number in 0..8 {
-                let x = (screen_pos_x as usize + bit_number) % DISPLAY_WIDTH;
-                let current_pixel = self.buffer[y][x] as u8;
+            let current_pixel = self.buffer[x][y] as u8;
 
-                let current_bit = (block >> (7 - bit_number)) & 1;
-                let new_pixel = current_bit ^ current_pixel;
+            let current_bit = (byte >> (7 - bit_pos)) & 1;
+            let new_pixel = current_bit ^ current_pixel;
 
-                self.buffer[y][x] = if new_pixel != 0 { true } else { false };
+            self.buffer[x][y] = new_pixel != 0;
 
-                if current_pixel == 1 && new_pixel == 0 {
-                    pixel_turned_off = true;
-                }
+            if current_pixel == 1 && new_pixel == 0 {
+                pixel_collision = true;
             }
+
+            // if self.buffer[x][y] {
+            //     println!("{:?}", self.buffer[x][y])
+            // }
         }
-        pixel_turned_off
+
+        pixel_collision
     }
 }
