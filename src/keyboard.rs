@@ -1,23 +1,23 @@
 pub struct Keyboard {
-    key_pressed: Option<u8>,
+    key: Option<u8>,
 }
 
 impl Keyboard {
     pub fn new() -> Keyboard {
-        Keyboard { key_pressed: None }
+        Keyboard { key: None }
     }
 
-    pub fn pressed_key(&mut self, key: Option<u8>) {
-        self.key_pressed = key;
+    pub fn pressed_key(&mut self, key_pressed: Option<u8>) {
+        self.key = key_pressed;
     }
 
     pub fn get_pressed_key(&self) -> Option<u8> {
-        self.key_pressed
+        self.key
     }
 
-    pub fn released_key(&mut self, key: Option<u8>) {
-        if self.key_pressed == key {
-            self.key_pressed = None
+    pub fn released_key(&mut self, key_released: Option<u8>) {
+        if self.key == key_released {
+            self.key = None;
         }
     }
 }
