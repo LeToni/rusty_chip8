@@ -2,8 +2,6 @@
 
 Chip-8 emulator written in Rust
 
-## Example (Screenshot)
-
 ![Screenshot](screenshots/space_invaders_intro_screen.png)
 
 ## Test Roms
@@ -15,11 +13,11 @@ Two roms can be used to check if graphics are rendered correctly.
 
 ### Sreenshot when test_rendering is successful
 
-![Screenshot](screenshots/test_chip8_rendering_screen)
+![Screenshot](screenshots/test_chip8_rendering_screen.png)
 
 ### Screenshot when test_opcode is successful
 
-![Screenshot](screenshots/test_opcode_correct_screen)
+![Screenshot](screenshots/test_opcode_correct_screen.png)
 
 ## Resources
 
