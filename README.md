@@ -11,11 +11,11 @@ Two roms can be used to check if graphics are rendered correctly.
 - test_rendering.ch8: Test conditional jumps, mathematical and logical operations of the chip8 ([more detailed explanation](https://slack-files.com/T3CH37TNX-F3RKEUKL4-b05ab4930d)).
 - test_opcode.ch8: Test operations (read, write, compare etc.) on chip8 registers ([more detailed explanation](https://github.com/corax89/chip8-test-rom))
 
-### Sreenshot when test_rendering is successful
+<b> Sreenshot when test_rendering is successful <b>
 
 ![Screenshot](screenshots/test_chip8_rendering_screen.png)
 
-### Screenshot when test_opcode is successful
+<b> Screenshot when test_opcode is successful <b>
 
 ![Screenshot](screenshots/test_opcode_correct_screen.png)
 
