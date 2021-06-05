@@ -39,10 +39,6 @@ impl Display {
             if current_pixel == 1 && new_pixel == 0 {
                 pixel_collision = true;
             }
-
-            // if self.buffer[x][y] {
-            //     println!("{:?}", self.buffer[x][y])
-            // }
         }
 
         pixel_collision
