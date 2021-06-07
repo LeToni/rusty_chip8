@@ -7,25 +7,36 @@ Chip-8 emulator written in Rust
 ## Keyboard Mapping
 
 <table>
-<tr><th>Chip-8 Keyboard </th><th>Standard Keyboard</th></tr>
+  <tr><th>Chip-8 Keyboard </th><th></th><th>Standard Keyboard</th></tr>
 <tr><td>
-|    |    |    |    |
-|:--:|:--:|:--:|:--:|
-|1   |2   |3   |C   |
-|4   |5   |6   |D   |
-|7   |8   |9   |E   |
-|A   |0   |B   |F   |
-
-</td><td>
-|    |    |    |    |
-|:--:|:--:|:--:|:--:|
-|1   |2   |3   |4   |
-|Q   |W   |E   |R   |
-|A   |S   |D   |F   |
-|Y   |X   |C   |V   |
-
-</td></tr> 
+  
+<table>
+  <tr> <td> 1 </td><td> 2 </td><td> 3 </td><td> C </td> </tr>
+  <tr> <td> 4 </td><td> 5 </td><td> 6 </td><td> D </td> </tr>
+  <tr> <td> 7 </td><td> 8 </td><td> 9 </td><td> E </td> </tr>
+  <tr> <td> A </td><td> 0 </td><td> B </td><td> F </td> </tr>
 </table>
+    
+</td>
+  <td> => </td>
+<td>
+  
+<table>
+  <tr> <td> 1 </td><td> 2 </td><td> 3 </td><td> 4 </td> </tr>
+  <tr> <td> Q </td><td> W </td><td> E </td><td> R </td> </tr>
+  <tr> <td> A </td><td> S </td><td> D </td><td> F </td> </tr>
+  <tr> <td> Y </td><td> X </td><td> C </td><td> V </td> </tr>
+</table>
+    
+</td>
+  
+</tr>   
+</table>
+
+## Run chip-8 emulator
+
+... Work in Progress
+
 ## Test Roms
 
 Two roms can be used to check if graphics are rendered correctly.
