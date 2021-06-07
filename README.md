@@ -4,6 +4,28 @@ Chip-8 emulator written in Rust
 
 ![Screenshot](screenshots/space_invaders_intro_screen.png)
 
+## Keyboard Mapping
+
+<table>
+<tr><th>Chip-8 Keyboard </th><th>Standard Keyboard</th></tr>
+<tr><td>
+|    |    |    |    |
+|:--:|:--:|:--:|:--:|
+|1   |2   |3   |C   |
+|4   |5   |6   |D   |
+|7   |8   |9   |E   |
+|A   |0   |B   |F   |
+
+</td><td>
+|    |    |    |    |
+|:--:|:--:|:--:|:--:|
+|1   |2   |3   |4   |
+|Q   |W   |E   |R   |
+|A   |S   |D   |F   |
+|Y   |X   |C   |V   |
+
+</td></tr> 
+</table>
 ## Test Roms
 
 Two roms can be used to check if graphics are rendered correctly.
