@@ -1,4 +1,4 @@
-# Rusty Chip-8 emulator
+# Rusty Chip-8 emulator (WIP)
 
 Chip-8 emulator written in Rust
 
